@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Red+Hat+Display:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0a0a0f;
+            --bg-card: #151520;
+            --bg-hover: #1c1c2b;
+            --accent-primary: #ff3366;
+            --accent-secondary: #00e5ff;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --border: #2a2a3e;
+            --success: #00ff88;
+            --warning: #ffaa00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Red Hat Display', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 51, 102, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 229, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            transition: margin-right 0.3s ease;
+        }
+
+        .main-content.chat-open {
+            margin-right: 400px;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        .progress-section {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        }
+
+        .progress-header {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-container {
+            background: #0a0a0f;
+            height: 40px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--border);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 700;
+            font-size: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Red Hat Display', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), #ff5577);
+            border-color: var(--accent-primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 51, 102, 0.3);
+        }
+
+        .songs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .song-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .song-card:hover {
+            border-color: var(--accent-secondary);
+            box-shadow: 0 4px 20px rgba(0, 229, 255, 0.1);
+        }
+
+        .song-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .song-title {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--text-primary);
+        }
+
+        .song-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 5px;
+            transition: color 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            color: var(--accent-primary);
+        }
+
+        .stages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .stage-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .stage-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        select {
+            background: #0a0a0f;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Red Hat Display', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        select:hover {
+            border-color: var(--accent-secondary);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .expandable-section {
+            margin-top: 15px;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+            display: none;
+        }
+
+        .expandable-section.open {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        textarea {
+            width: 100%;
+            background: #0a0a0f;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Red Hat Display', sans-serif;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .section-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Chatbot Sidebar */
+        .chat-sidebar {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: var(--bg-card);
+            border-left: 2px solid var(--border);
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .chat-sidebar.open {
+            right: 0;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(255, 51, 102, 0.1), rgba(0, 229, 255, 0.1));
+        }
+
+        .chat-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .close-chat {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            line-height: 1;
+        }
+
+        .usage-indicator {
+            padding: 15px 20px;
+            background: var(--bg-hover);
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .usage-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .usage-count {
+            font-weight: 700;
+            color: var(--accent-secondary);
+        }
+
+        .usage-count.warning {
+            color: var(--warning);
+        }
+
+        .usage-count.danger {
+            color: var(--accent-primary);
+        }
+
+        .premium-badge {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 85%;
+            line-height: 1.5;
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, var(--accent-primary), #ff5577);
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .message.assistant {
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            align-self: flex-start;
+        }
+
+        .message.system {
+            background: var(--bg-main);
+            border: 1px solid var(--warning);
+            align-self: center;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--warning);
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            border-top: 2px solid var(--border);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: #0a0a0f;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 10px;
+            border-radius: 6px;
+            font-family: 'Red Hat Display', sans-serif;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--accent-primary), #ff5577);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 51, 102, 0.3);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .chat-toggle {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(255, 51, 102, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(255, 51, 102, 0.6);
+        }
+
+        /* Paywall Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .pricing-cards {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .pricing-card {
+            background: var(--bg-hover);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .pricing-card.recommended {
+            border-color: var(--accent-secondary);
+        }
+
+        .pricing-card.recommended::before {
+            content: 'RECOMMENDED';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .plan-name {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .plan-price {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+        }
+
+        .plan-features {
+            list-style: none;
+            padding: 0;
+        }
+
+        .plan-features li {
+            padding: 8px 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .plan-features li::before {
+            content: '✓ ';
+            color: var(--success);
+            font-weight: 700;
+            margin-right: 8px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--text-secondary);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-content" id="mainContent">
+            <h1>ALBUM PLANNER</h1>
+            <p class="subtitle">Track your musical journey from idea to mastered release</p>
+
+            <div class="progress-section">
+                <div class="progress-header">Overall Album Progress</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                    <div class="progress-text" id="progressText">0%</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-primary" onclick="addSong()">+ Add Song</button>
+                <button class="btn" onclick="exportData()">Export Data</button>
+                <button class="btn" onclick="importData()">Import Data</button>
+            </div>
+
+            <div class="songs-list" id="songsList"></div>
+        </div>
+
+        <div class="chat-sidebar" id="chatSidebar">
+            <div class="chat-header">
+                <div class="chat-title">AI PLANNER</div>
+                <button class="close-chat" onclick="toggleChat()">×</button>
+            </div>
+            <div class="usage-indicator" id="usageIndicator">
+                <div class="usage-text">Messages remaining:</div>
+                <div class="usage-count" id="usageCount">20</div>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <input 
+                        type="text" 
+                        class="chat-input" 
+                        id="chatInput" 
+                        placeholder="Ask for album planning advice..."
+                        onkeypress="handleChatKeyPress(event)"
+                    >
+                    <button class="send-btn" onclick="sendMessage()" id="sendBtn">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="chat-toggle" onclick="toggleChat()">💬</button>
+
+    <!-- Paywall Modal -->
+    <div class="modal-overlay" id="paywallModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closePaywall()">×</button>
+            <div class="modal-title">Upgrade to Premium</div>
+            <div class="modal-subtitle">Unlock unlimited AI planning assistance</div>
+            <div class="pricing-cards">
+                <div class="pricing-card" onclick="selectPlan('monthly')">
+                    <div class="plan-name">Monthly Plan</div>
+                    <div class="plan-price">$4.99<span style="font-size: 1rem; color: var(--text-secondary);">/month</span></div>
+                    <ul class="plan-features">
+                        <li>Unlimited AI messages</li>
+                        <li>Priority support</li>
+                        <li>Advanced planning features</li>
+                    </ul>
+                </div>
+                <div class="pricing-card recommended" onclick="selectPlan('yearly')">
+                    <div class="plan-name">Yearly Plan</div>
+                    <div class="plan-price">$49.99<span style="font-size: 1rem; color: var(--text-secondary);">/year</span></div>
+                    <ul class="plan-features">
+                        <li>Unlimited AI messages</li>
+                        <li>Priority support</li>
+                        <li>Advanced planning features</li>
+                        <li>Save $10/year (2 months free!)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration - UPDATE THESE WITH YOUR VALUES
+        const API_URL = 'https://album-planner-api.evelynn4221.workers.dev'; // Update this!
+
+        // Data structure
+        let albumData = {
+            songs: [],
+            chatHistory: []
+        };
+
+        let userId = null;
+        let userUsage = { usage: 0, limit: 20, isPremium: false };
+
+        const STAGES = ['Produced', 'Vocals', 'Final Mix', 'Mastered'];
+        const STATUS_OPTIONS = ['Not Started', 'In Progress', 'Complete'];
+
+        // Initialize
+        function init() {
+            userId = getUserId();
+            loadData();
+            renderSongs();
+            updateProgress();
+            checkUsage();
+            checkPaymentStatus();
+            
+            if (albumData.songs.length === 0) {
+                addSong();
+            }
+        }
+
+        function getUserId() {
+            let id = localStorage.getItem('albumPlannerId');
+            if (!id) {
+                id = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('albumPlannerId', id);
+            }
+            return id;
+        }
+
+        async function checkUsage() {
+            try {
+                const response = await fetch(`${API_URL}/api/check-usage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId })
+                });
+
+                if (response.ok) {
+                    userUsage = await response.json();
+                    updateUsageDisplay();
+                }
+            } catch (error) {
+                console.error('Failed to check usage:', error);
+            }
+        }
+
+        function updateUsageDisplay() {
+            const countEl = document.getElementById('usageCount');
+            const indicatorEl = document.getElementById('usageIndicator');
+
+            if (userUsage.isPremium) {
+                indicatorEl.innerHTML = `
+                    <div class="usage-text">Status:</div>
+                    <div class="premium-badge">Premium</div>
+                `;
+            } else {
+                countEl.textContent = userUsage.remaining;
+                countEl.className = 'usage-count';
+                
+                if (userUsage.remaining <= 5) {
+                    countEl.classList.add('danger');
+                } else if (userUsage.remaining <= 10) {
+                    countEl.classList.add('warning');
+                }
+            }
+        }
+
+        async function checkPaymentStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionId = urlParams.get('session_id');
+            const paymentStatus = urlParams.get('payment');
+
+            if (paymentStatus === 'success' && sessionId) {
+                try {
+                    const response = await fetch(`${API_URL}/api/verify-subscription`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ sessionId, userId })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            alert('🎉 Welcome to Premium! You now have unlimited access.');
+                            await checkUsage();
+                            // Clean URL
+                            window.history.replaceState({}, document.title, window.location.pathname);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Verification error:', error);
+                }
+            }
+        }
+
+        // Song management
+        function addSong() {
+            const song = {
+                id: Date.now(),
+                title: `Song ${albumData.songs.length + 1}`,
+                stages: {
+                    'Produced': 'Not Started',
+                    'Vocals': 'Not Started',
+                    'Final Mix': 'Not Started',
+                    'Mastered': 'Not Started'
+                },
+                lyrics: '',
+                notes: ''
+            };
+            albumData.songs.push(song);
+            saveData();
+            renderSongs();
+            updateProgress();
+        }
+
+        function deleteSong(id) {
+            if (confirm('Are you sure you want to delete this song?')) {
+                albumData.songs = albumData.songs.filter(s => s.id !== id);
+                saveData();
+                renderSongs();
+                updateProgress();
+            }
+        }
+
+        function updateSongTitle(id, title) {
+            const song = albumData.songs.find(s => s.id === id);
+            if (song) {
+                song.title = title;
+                saveData();
+            }
+        }
+
+        function updateStage(id, stage, status) {
+            const song = albumData.songs.find(s => s.id === id);
+            if (song) {
+                song.stages[stage] = status;
+                saveData();
+                updateProgress();
+            }
+        }
+
+        function updateLyrics(id, lyrics) {
+            const song = albumData.songs.find(s => s.id === id);
+            if (song) {
+                song.lyrics = lyrics;
+                saveData();
+            }
+        }
+
+        function updateNotes(id, notes) {
+            const song = albumData.songs.find(s => s.id === id);
+            if (song) {
+                song.notes = notes;
+                saveData();
+            }
+        }
+
+        function toggleSection(id, section) {
+            const element = document.getElementById(`${section}-${id}`);
+            if (element) {
+                element.classList.toggle('open');
+            }
+        }
+
+        // Rendering
+        function renderSongs() {
+            const container = document.getElementById('songsList');
+            container.innerHTML = albumData.songs.map(song => `
+                <div class="song-card">
+                    <div class="song-header">
+                        <input 
+                            type="text" 
+                            class="song-title" 
+                            value="${song.title}"
+                            onchange="updateSongTitle(${song.id}, this.value)"
+                            style="background: transparent; border: none; color: var(--text-primary); outline: none;"
+                        >
+                        <div class="song-actions">
+                            <button class="icon-btn" onclick="toggleSection(${song.id}, 'lyrics')" title="Lyrics">📝</button>
+                            <button class="icon-btn" onclick="toggleSection(${song.id}, 'notes')" title="Notes">📋</button>
+                            <button class="icon-btn" onclick="deleteSong(${song.id})" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="stages-grid">
+                        ${STAGES.map(stage => `
+                            <div class="stage-item">
+                                <label class="stage-label">${stage}</label>
+                                <select onchange="updateStage(${song.id}, '${stage}', this.value)">
+                                    ${STATUS_OPTIONS.map(status => `
+                                        <option value="${status}" ${song.stages[stage] === status ? 'selected' : ''}>
+                                            ${status === 'Not Started' ? '○' : status === 'In Progress' ? '◐' : '●'} ${status}
+                                        </option>
+                                    `).join('')}
+                                </select>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="expandable-section" id="lyrics-${song.id}">
+                        <div class="section-label">Lyrics</div>
+                        <textarea 
+                            placeholder="Write your lyrics here..."
+                            onchange="updateLyrics(${song.id}, this.value)"
+                        >${song.lyrics}</textarea>
+                    </div>
+                    <div class="expandable-section" id="notes-${song.id}">
+                        <div class="section-label">Notes</div>
+                        <textarea 
+                            placeholder="Add notes about this song..."
+                            onchange="updateNotes(${song.id}, this.value)"
+                        >${song.notes}</textarea>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateProgress() {
+            const totalSongs = albumData.songs.length;
+            if (totalSongs === 0) {
+                document.getElementById('progressBar').style.width = '0%';
+                document.getElementById('progressText').textContent = '0%';
+                return;
+            }
+
+            const completeSongs = albumData.songs.filter(song => 
+                Object.values(song.stages).every(status => status === 'Complete')
+            ).length;
+
+            const percentage = Math.round((completeSongs / totalSongs) * 100);
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+            document.getElementById('progressText').textContent = `${percentage}% Complete (${completeSongs}/${totalSongs} songs)`;
+        }
+
+        // Data persistence
+        function saveData() {
+            localStorage.setItem('albumPlannerData', JSON.stringify(albumData));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('albumPlannerData');
+            if (saved) {
+                albumData = JSON.parse(saved);
+            }
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(albumData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'album-planner-data.json';
+            link.click();
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        albumData = JSON.parse(event.target.result);
+                        saveData();
+                        renderSongs();
+                        updateProgress();
+                        alert('Data imported successfully!');
+                    } catch (error) {
+                        alert('Error importing data. Please check the file format.');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // Chat functionality
+        function toggleChat() {
+            const sidebar = document.getElementById('chatSidebar');
+            const mainContent = document.getElementById('mainContent');
+            sidebar.classList.toggle('open');
+            mainContent.classList.toggle('chat-open');
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Check if user has reached limit
+            if (!userUsage.isPremium && userUsage.remaining <= 0) {
+                showPaywall();
+                return;
+            }
+
+            // Add user message
+            addChatMessage(message, 'user');
+            input.value = '';
+
+            // Disable send button
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<span class="loading"></span>';
+
+            try {
+                // Prepare album context
+                const albumContext = {
+                    totalSongs: albumData.songs.length,
+                    completedSongs: albumData.songs.filter(s => 
+                        Object.values(s.stages).every(status => status === 'Complete')
+                    ).length,
+                    songsInProgress: albumData.songs.filter(s => 
+                        Object.values(s.stages).some(status => status === 'In Progress')
+                    ).length,
+                    songs: albumData.songs.map(s => ({
+                        title: s.title,
+                        stages: s.stages
+                    }))
+                };
+
+                const response = await fetch(`${API_URL}/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId,
+                        message,
+                        albumContext
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.status === 403 && data.error === 'usage_limit_reached') {
+                    showPaywall();
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to send message');
+                }
+
+                addChatMessage(data.response, 'assistant');
+                
+                // Update usage
+                userUsage.usage = data.usage;
+                userUsage.remaining = data.remaining;
+                updateUsageDisplay();
+
+            } catch (error) {
+                console.error('Error:', error);
+                addChatMessage('Sorry, there was an error. Please try again.', 'system');
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Send';
+            }
+        }
+
+        function addChatMessage(text, role) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.textContent = text;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Save to history
+            albumData.chatHistory.push({ role, text, timestamp: Date.now() });
+            saveData();
+        }
+
+        // Paywall
+        function showPaywall() {
+            document.getElementById('paywallModal').classList.add('open');
+        }
+
+        function closePaywall() {
+            document.getElementById('paywallModal').classList.remove('open');
+        }
+
+        async function selectPlan(plan) {
+            try {
+                const response = await fetch(`${API_URL}/api/create-checkout`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, plan })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.url) {
+                    window.location.href = data.url;
+                } else {
+                    alert('Failed to start checkout. Please try again.');
+                }
+            } catch (error) {
+                console.error('Checkout error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+
+        // Initialize app
+        init();
+    </script>
+</body>
+</html>
