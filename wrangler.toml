@@ -1,0 +1,16 @@
+name = "album-planner-api"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# KV Namespace for storing user data
+[[kv_namespaces]]
+binding = "ALBUM_PLANNER_KV"
+id = "f794fd34bb144552a01967f4bb5746c5" # You'll get this when you create a KV namespace
+
+# Environment variables (set these in Cloudflare dashboard)
+[vars]
+FRONTEND_URL = "https://github.com/evelynn808/album-planner"
+
+# Secrets (set these via `wrangler secret put SECRET_NAME`)
+# - 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
+# - sk_test_51ThBk3J2r8kXg3Tu5ycY9b0W1tgfD9XZTWhg3AAZdqBT1dY6cYYvBoXRJY2lq20bJDXmfQlVAPm8pzItgfroxWoP00LiiOBbsu
