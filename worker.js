@@ -105,7 +105,7 @@ async function handleChat(request, env) {
         'Authorization': `Bearer ${env.GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'mixtral-8x7b-32768', // Free Mixtral model, very fast
+        model: 'llama3-8b-8192', // Free Mixtral model, very fast
         max_tokens: 1000,
         messages: [
           {
