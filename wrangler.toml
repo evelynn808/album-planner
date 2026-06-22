@@ -1,0 +1,12 @@
+name = "album-planner-api"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# KV Namespace for storing user data
+[[kv_namespaces]]
+binding = "ALBUM_PLANNER_KV"
+id = "f794fd34bb144552a01967f4bb5746c5"
+
+# Environment variables (set these in Cloudflare dashboard)
+[vars]
+FRONTEND_URL = "https://evelynn808.github.io/album-planner"
