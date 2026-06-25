@@ -36,6 +36,17 @@ export default {
       return await handleVerifySubscription(request, env);
     }
 
+    // Auth routes
+    if (url.pathname === '/api/auth/signup' && request.method === 'POST') {
+      return await handleSignup(request, env);
+    }
+    if (url.pathname === '/api/auth/login' && request.method === 'POST') {
+      return await handleLogin(request, env);
+    }
+    if (url.pathname === '/api/auth/me' && request.method === 'POST') {
+      return await handleMe(request, env);
+    }
+
     return new Response('Not Found', { status: 404 });
   },
 };
@@ -43,7 +54,12 @@ export default {
 // Check user's remaining usage
 async function handleCheckUsage(request, env) {
   try {
-    const { userId } = await request.json();
+    const { token } = await request.json();
+
+    const userId = await env.ALBUM_PLANNER_KV.get(`token:${token}`);
+    if (!userId) {
+      return jsonResponse({ error: 'unauthorized', message: 'Please log in.' }, 401);
+    }
     
     // Get usage from KV storage
     const userKey = `user:${userId}`;
@@ -73,7 +89,12 @@ async function handleCheckUsage(request, env) {
 // Handle chat message with Groq API (FREE!)
 async function handleChat(request, env) {
   try {
-    const { userId, message, albumContext } = await request.json();
+    const { token, message, albumContext } = await request.json();;
+
+  const userId = await env.ALBUM_PLANNER_KV.get(`token:${token}`);
+      if (!userId) {
+        return jsonResponse({ error: 'unauthorized', message: 'Please log in.' }, 401);
+      }
 
     // Get user data
     const userKey = `user:${userId}`;
@@ -279,4 +300,148 @@ function jsonResponse(data, status = 200) {
       'Access-Control-Allow-Origin': '*',
     },
   });
+}
+
+// --- AUTH HELPERS ---
+
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function generateToken() {
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return Array.from(array).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// --- AUTH ROUTES ---
+
+async function handleSignup(request, env) {
+  try {
+    const { email, password, displayName } = await request.json();
+
+    if (!email || !password || !displayName) {
+      return jsonResponse({ error: 'All fields are required' }, 400);
+    }
+    if (password.length < 8) {
+      return jsonResponse({ error: 'Password must be at least 8 characters' }, 400);
+    }
+
+    // Check if email already exists
+    const emailKey = `email:${email.toLowerCase()}`;
+    const existingUser = await env.ALBUM_PLANNER_KV.get(emailKey);
+    if (existingUser) {
+      return jsonResponse({ error: 'An account with this email already exists' }, 409);
+    }
+
+    // Create user
+    const userId = 'user_' + Date.now() + '_' + generateToken().slice(0, 9);
+    const hashedPassword = await hashPassword(password);
+    const token = generateToken();
+
+    const userData = {
+      userId,
+      email: email.toLowerCase(),
+      displayName,
+      hashedPassword,
+      usage: 0,
+      isPremium: false,
+      premiumUntil: null,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Save user data and email lookup
+    await env.ALBUM_PLANNER_KV.put(`user:${userId}`, JSON.stringify(userData));
+    await env.ALBUM_PLANNER_KV.put(emailKey, userId);
+
+    // Save session token (expires in 30 days)
+    await env.ALBUM_PLANNER_KV.put(
+      `token:${token}`,
+      userId,
+      { expirationTtl: 60 * 60 * 24 * 30 }
+    );
+
+    return jsonResponse({
+      token,
+      userId,
+      displayName,
+      email: userData.email,
+    });
+
+  } catch (error) {
+    return jsonResponse({ error: 'Signup failed: ' + error.message }, 500);
+  }
+}
+
+async function handleLogin(request, env) {
+  try {
+    const { email, password } = await request.json();
+
+    if (!email || !password) {
+      return jsonResponse({ error: 'Email and password are required' }, 400);
+    }
+
+    // Look up userId by email
+    const emailKey = `email:${email.toLowerCase()}`;
+    const userId = await env.ALBUM_PLANNER_KV.get(emailKey);
+    if (!userId) {
+      return jsonResponse({ error: 'Invalid email or password' }, 401);
+    }
+
+    // Get user data
+    const userData = await env.ALBUM_PLANNER_KV.get(`user:${userId}`, { type: 'json' });
+    if (!userData) {
+      return jsonResponse({ error: 'Invalid email or password' }, 401);
+    }
+
+    // Check password
+    const hashedPassword = await hashPassword(password);
+    if (hashedPassword !== userData.hashedPassword) {
+      return jsonResponse({ error: 'Invalid email or password' }, 401);
+    }
+
+    // Generate new token
+    const token = generateToken();
+    await env.ALBUM_PLANNER_KV.put(
+      `token:${token}`,
+      userId,
+      { expirationTtl: 60 * 60 * 24 * 30 }
+    );
+
+    return jsonResponse({
+      token,
+      userId,
+      displayName: userData.displayName,
+      email: userData.email,
+    });
+
+  } catch (error) {
+    return jsonResponse({ error: 'Login failed: ' + error.message }, 500);
+  }
+}
+
+async function handleMe(request, env) {
+  try {
+    const { token } = await request.json();
+    if (!token) return jsonResponse({ error: 'No token provided' }, 401);
+
+    const userId = await env.ALBUM_PLANNER_KV.get(`token:${token}`);
+    if (!userId) return jsonResponse({ error: 'Invalid or expired token' }, 401);
+
+    const userData = await env.ALBUM_PLANNER_KV.get(`user:${userId}`, { type: 'json' });
+    if (!userData) return jsonResponse({ error: 'User not found' }, 404);
+
+    return jsonResponse({
+      userId,
+      displayName: userData.displayName,
+      email: userData.email,
+      isPremium: userData.isPremium || false,
+    });
+  } catch (error) {
+    return jsonResponse({ error: 'Auth check failed' }, 500);
+  }
 }
