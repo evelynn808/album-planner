@@ -21,25 +21,151 @@
             --warning: #ffaa00;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Red Hat Display', sans-serif;
             background: var(--bg-main);
             color: var(--text-primary);
             min-height: 100vh;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 20% 50%, rgba(255, 51, 102, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(0, 229, 255, 0.1) 0%, transparent 50%);
         }
 
+        /* ── AUTH SCREEN ── */
+        #authScreen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        #authScreen h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #authScreen .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 40px;
+        }
+
+        .auth-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        }
+
+        .auth-card h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .auth-input {
+            background: #0a0a0f;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-family: 'Red Hat Display', sans-serif;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .auth-input::placeholder { color: var(--text-secondary); }
+
+        .auth-error {
+            color: var(--accent-primary);
+            font-size: 0.875rem;
+            min-height: 20px;
+        }
+
+        .auth-switch {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-align: center;
+        }
+
+        .auth-switch span {
+            color: var(--accent-secondary);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .auth-switch span:hover { text-decoration: underline; }
+
+        /* ── MAIN APP ── */
+        #appScreen { display: none; }
+
+        .top-bar {
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--border);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 0.1em;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .user-name {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .user-name strong { color: var(--text-primary); }
+
         .container {
             display: flex;
-            height: 100vh;
+            height: calc(100vh - 65px);
             overflow: hidden;
         }
 
@@ -50,9 +176,7 @@
             transition: margin-right 0.3s ease;
         }
 
-        .main-content.chat-open {
-            margin-right: 400px;
-        }
+        .main-content.chat-open { margin-right: 400px; }
 
         h1 {
             font-family: 'Bebas Neue', sans-serif;
@@ -85,9 +209,7 @@
         .progress-section::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 3px;
             background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
         }
@@ -119,10 +241,7 @@
         .progress-bar::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
             animation: shimmer 2s infinite;
         }
@@ -134,8 +253,7 @@
 
         .progress-text {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             font-weight: 700;
             font-size: 1rem;
@@ -177,6 +295,11 @@
             box-shadow: 0 8px 20px rgba(255, 51, 102, 0.3);
         }
 
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.875rem;
+        }
+
         .songs-list {
             display: flex;
             flex-direction: column;
@@ -203,16 +326,17 @@
             margin-bottom: 15px;
         }
 
-        .song-title {
+        .song-title-input {
             font-weight: 700;
             font-size: 1.3rem;
             color: var(--text-primary);
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
         }
 
-        .song-actions {
-            display: flex;
-            gap: 10px;
-        }
+        .song-actions { display: flex; gap: 10px; }
 
         .icon-btn {
             background: none;
@@ -221,11 +345,10 @@
             cursor: pointer;
             padding: 5px;
             transition: color 0.2s ease;
+            font-size: 1rem;
         }
 
-        .icon-btn:hover {
-            color: var(--accent-primary);
-        }
+        .icon-btn:hover { color: var(--accent-primary); }
 
         .stages-grid {
             display: grid;
@@ -234,11 +357,7 @@
             margin-bottom: 15px;
         }
 
-        .stage-item {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
+        .stage-item { display: flex; flex-direction: column; gap: 5px; }
 
         .stage-label {
             font-size: 0.8rem;
@@ -259,14 +378,8 @@
             transition: all 0.2s ease;
         }
 
-        select:hover {
-            border-color: var(--accent-secondary);
-        }
-
-        select:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-        }
+        select:hover { border-color: var(--accent-secondary); }
+        select:focus { outline: none; border-color: var(--accent-primary); }
 
         .expandable-section {
             margin-top: 15px;
@@ -281,14 +394,8 @@
         }
 
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         textarea {
@@ -303,10 +410,7 @@
             min-height: 100px;
         }
 
-        textarea:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-        }
+        textarea:focus { outline: none; border-color: var(--accent-primary); }
 
         .section-label {
             font-weight: 600;
@@ -317,13 +421,13 @@
             letter-spacing: 0.05em;
         }
 
-        /* Chatbot Sidebar */
+        /* ── CHAT SIDEBAR ── */
         .chat-sidebar {
             position: fixed;
             right: -400px;
-            top: 0;
+            top: 65px;
             width: 400px;
-            height: 100vh;
+            height: calc(100vh - 65px);
             background: var(--bg-card);
             border-left: 2px solid var(--border);
             transition: right 0.3s ease;
@@ -332,9 +436,7 @@
             z-index: 1000;
         }
 
-        .chat-sidebar.open {
-            right: 0;
-        }
+        .chat-sidebar.open { right: 0; }
 
         .chat-header {
             padding: 20px;
@@ -342,7 +444,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(135deg, rgba(255, 51, 102, 0.1), rgba(0, 229, 255, 0.1));
+            background: linear-gradient(135deg, rgba(255,51,102,0.1), rgba(0,229,255,0.1));
         }
 
         .chat-title {
@@ -370,23 +472,11 @@
             align-items: center;
         }
 
-        .usage-text {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
+        .usage-text { font-size: 0.9rem; color: var(--text-secondary); }
 
-        .usage-count {
-            font-weight: 700;
-            color: var(--accent-secondary);
-        }
-
-        .usage-count.warning {
-            color: var(--warning);
-        }
-
-        .usage-count.danger {
-            color: var(--accent-primary);
-        }
+        .usage-count { font-weight: 700; color: var(--accent-secondary); }
+        .usage-count.warning { color: var(--warning); }
+        .usage-count.danger { color: var(--accent-primary); }
 
         .premium-badge {
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
@@ -412,6 +502,7 @@
             border-radius: 12px;
             max-width: 85%;
             line-height: 1.5;
+            font-size: 0.95rem;
         }
 
         .message.user {
@@ -440,10 +531,7 @@
             border-top: 2px solid var(--border);
         }
 
-        .chat-input-wrapper {
-            display: flex;
-            gap: 10px;
-        }
+        .chat-input-wrapper { display: flex; gap: 10px; }
 
         .chat-input {
             flex: 1;
@@ -454,6 +542,8 @@
             border-radius: 6px;
             font-family: 'Red Hat Display', sans-serif;
         }
+
+        .chat-input:focus { outline: none; border-color: var(--accent-primary); }
 
         .send-btn {
             background: linear-gradient(135deg, var(--accent-primary), #ff5577);
@@ -466,16 +556,8 @@
             transition: all 0.2s ease;
         }
 
-        .send-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 51, 102, 0.3);
-        }
-
-        .send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .send-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,51,102,0.3); }
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
         .chat-toggle {
             position: fixed;
@@ -489,24 +571,19 @@
             color: white;
             font-size: 1.5rem;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(255, 51, 102, 0.4);
+            box-shadow: 0 4px 20px rgba(255,51,102,0.4);
             transition: all 0.3s ease;
             z-index: 999;
+            display: none;
         }
 
-        .chat-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 30px rgba(255, 51, 102, 0.6);
-        }
+        .chat-toggle:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(255,51,102,0.6); }
 
-        /* Paywall Modal */
+        /* ── PAYWALL MODAL ── */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(10px);
             display: none;
             align-items: center;
@@ -514,9 +591,7 @@
             z-index: 2000;
         }
 
-        .modal-overlay.open {
-            display: flex;
-        }
+        .modal-overlay.open { display: flex; }
 
         .modal {
             background: var(--bg-card);
@@ -530,8 +605,7 @@
 
         .modal-close {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 20px; right: 20px;
             background: none;
             border: none;
             color: var(--text-secondary);
@@ -549,17 +623,9 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .modal-subtitle {
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-        }
+        .modal-subtitle { color: var(--text-secondary); margin-bottom: 30px; font-size: 1.1rem; }
 
-        .pricing-cards {
-            display: grid;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+        .pricing-cards { display: grid; gap: 15px; margin-bottom: 20px; }
 
         .pricing-card {
             background: var(--bg-hover);
@@ -571,20 +637,13 @@
             position: relative;
         }
 
-        .pricing-card:hover {
-            border-color: var(--accent-primary);
-            transform: translateY(-2px);
-        }
-
-        .pricing-card.recommended {
-            border-color: var(--accent-secondary);
-        }
+        .pricing-card:hover { border-color: var(--accent-primary); transform: translateY(-2px); }
+        .pricing-card.recommended { border-color: var(--accent-secondary); }
 
         .pricing-card.recommended::before {
             content: 'RECOMMENDED';
             position: absolute;
-            top: -12px;
-            right: 20px;
+            top: -12px; right: 20px;
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             padding: 4px 12px;
             border-radius: 12px;
@@ -593,11 +652,7 @@
             letter-spacing: 0.05em;
         }
 
-        .plan-name {
-            font-weight: 700;
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-        }
+        .plan-name { font-weight: 700; font-size: 1.3rem; margin-bottom: 10px; }
 
         .plan-price {
             font-family: 'Bebas Neue', sans-serif;
@@ -606,105 +661,133 @@
             margin-bottom: 15px;
         }
 
-        .plan-features {
-            list-style: none;
-            padding: 0;
-        }
+        .plan-features { list-style: none; padding: 0; }
 
-        .plan-features li {
-            padding: 8px 0;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .plan-features li::before {
-            content: '✓ ';
-            color: var(--success);
-            font-weight: 700;
-            margin-right: 8px;
-        }
+        .plan-features li { padding: 8px 0; color: var(--text-secondary); font-size: 0.95rem; }
+        .plan-features li::before { content: '✓ '; color: var(--success); font-weight: 700; margin-right: 8px; }
 
         .loading {
             display: inline-block;
-            width: 12px;
-            height: 12px;
+            width: 12px; height: 12px;
             border: 2px solid var(--text-secondary);
             border-top-color: var(--accent-primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-main);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-primary);
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="main-content" id="mainContent">
-            <h1>ALBUM PLANNER</h1>
-            <p class="subtitle">Track your musical journey from idea to mastered release</p>
 
-            <div class="progress-section">
-                <div class="progress-header">Overall Album Progress</div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
-                    <div class="progress-text" id="progressText">0%</div>
-                </div>
-            </div>
+    <!-- ══════════════ AUTH SCREEN ══════════════ -->
+    <div id="authScreen">
+        <h1>ALBUM PLANNER</h1>
+        <p class="subtitle">Track your musical journey from idea to mastered release</p>
 
-            <div class="controls">
-                <button class="btn btn-primary" onclick="addSong()">+ Add Song</button>
-                <button class="btn" onclick="exportData()">Export Data</button>
-                <button class="btn" onclick="importData()">Import Data</button>
-            </div>
+        <div class="auth-card">
+            <h2 id="authTitle">Welcome Back</h2>
 
-            <div class="songs-list" id="songsList"></div>
-        </div>
+            <!-- Display name field (signup only) -->
+            <input
+                type="text"
+                class="auth-input"
+                id="authDisplayName"
+                placeholder="Display Name"
+                style="display:none"
+            >
 
-        <div class="chat-sidebar" id="chatSidebar">
-            <div class="chat-header">
-                <div class="chat-title">AI PLANNER</div>
-                <button class="close-chat" onclick="toggleChat()">×</button>
-            </div>
-            <div class="usage-indicator" id="usageIndicator">
-                <div class="usage-text">Messages remaining:</div>
-                <div class="usage-count" id="usageCount">20</div>
-            </div>
-            <div class="chat-messages" id="chatMessages"></div>
-            <div class="chat-input-container">
-                <div class="chat-input-wrapper">
-                    <input 
-                        type="text" 
-                        class="chat-input" 
-                        id="chatInput" 
-                        placeholder="Ask for album planning advice..."
-                        onkeypress="handleChatKeyPress(event)"
-                    >
-                    <button class="send-btn" onclick="sendMessage()" id="sendBtn">Send</button>
-                </div>
+            <input
+                type="email"
+                class="auth-input"
+                id="authEmail"
+                placeholder="Email address"
+            >
+
+            <input
+                type="password"
+                class="auth-input"
+                id="authPassword"
+                placeholder="Password"
+                onkeypress="handleAuthKeyPress(event)"
+            >
+
+            <div class="auth-error" id="authError"></div>
+
+            <button class="btn btn-primary" onclick="submitAuth()" id="authSubmitBtn">Log In</button>
+
+            <div class="auth-switch">
+                <span id="authSwitchText">Don't have an account?</span>
+                <span onclick="toggleAuthMode()"> <span id="authSwitchLink">Sign up</span></span>
             </div>
         </div>
     </div>
 
-    <button class="chat-toggle" onclick="toggleChat()">💬</button>
+    <!-- ══════════════ MAIN APP ══════════════ -->
+    <div id="appScreen">
+        <!-- Top navigation bar -->
+        <div class="top-bar">
+            <div class="top-bar-title">ALBUM PLANNER</div>
+            <div class="user-info">
+                <span class="user-name">👤 <strong id="displayNameLabel"></strong></span>
+                <button class="btn btn-sm" onclick="logout()">Log Out</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="main-content" id="mainContent">
+                <p class="subtitle">Track your musical journey from idea to mastered release</p>
+
+                <div class="progress-section">
+                    <div class="progress-header">Overall Album Progress</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                        <div class="progress-text" id="progressText">0%</div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="addSong()">+ Add Song</button>
+                    <button class="btn" onclick="exportData()">Export Data</button>
+                    <button class="btn" onclick="importData()">Import Data</button>
+                </div>
+
+                <div class="songs-list" id="songsList"></div>
+            </div>
+
+            <!-- Chat sidebar -->
+            <div class="chat-sidebar" id="chatSidebar">
+                <div class="chat-header">
+                    <div class="chat-title">AI PLANNER</div>
+                    <button class="close-chat" onclick="toggleChat()">×</button>
+                </div>
+                <div class="usage-indicator" id="usageIndicator">
+                    <div class="usage-text">Messages remaining:</div>
+                    <div class="usage-count" id="usageCount">20</div>
+                </div>
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-container">
+                    <div class="chat-input-wrapper">
+                        <input
+                            type="text"
+                            class="chat-input"
+                            id="chatInput"
+                            placeholder="Ask for album planning advice..."
+                            onkeypress="handleChatKeyPress(event)"
+                        >
+                        <button class="send-btn" onclick="sendMessage()" id="sendBtn">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="chat-toggle" id="chatToggleBtn" onclick="toggleChat()">💬</button>
+    </div>
 
     <!-- Paywall Modal -->
     <div class="modal-overlay" id="paywallModal">
@@ -715,7 +798,7 @@
             <div class="pricing-cards">
                 <div class="pricing-card" onclick="selectPlan('monthly')">
                     <div class="plan-name">Monthly Plan</div>
-                    <div class="plan-price">$4.99<span style="font-size: 1rem; color: var(--text-secondary);">/month</span></div>
+                    <div class="plan-price">$4.99<span style="font-size:1rem;color:var(--text-secondary)">/month</span></div>
                     <ul class="plan-features">
                         <li>Unlimited AI messages</li>
                         <li>Priority support</li>
@@ -724,7 +807,7 @@
                 </div>
                 <div class="pricing-card recommended" onclick="selectPlan('yearly')">
                     <div class="plan-name">Yearly Plan</div>
-                    <div class="plan-price">$49.99<span style="font-size: 1rem; color: var(--text-secondary);">/year</span></div>
+                    <div class="plan-price">$49.99<span style="font-size:1rem;color:var(--text-secondary)">/year</span></div>
                     <ul class="plan-features">
                         <li>Unlimited AI messages</li>
                         <li>Priority support</li>
@@ -737,196 +820,259 @@
     </div>
 
     <script>
-        // Configuration - UPDATE THESE WITH YOUR VALUES
-        const API_URL = 'https://album-planner-api.evelynn4221.workers.dev'; // Update this!
+        const API_URL = 'https://album-planner-api.evelynn4221.workers.dev';
 
-        // Data structure
-        let albumData = {
-            songs: [],
-            chatHistory: []
-        };
-
-        let userId = null;
-        let userUsage = { usage: 0, limit: 20, isPremium: false };
+        // ── State ──
+        let albumData = { songs: [], chatHistory: [] };
+        let currentUser = null;   // { token, userId, displayName, email }
+        let userUsage   = { usage: 0, limit: 20, isPremium: false, remaining: 20 };
+        let authMode    = 'login'; // 'login' | 'signup'
 
         const STAGES = ['Produced', 'Vocals', 'Final Mix', 'Mastered'];
         const STATUS_OPTIONS = ['Not Started', 'In Progress', 'Complete'];
 
-        // Initialize
-        function init() {
-            userId = getUserId();
+        // ══════════════════════════════════════════
+        //  AUTH
+        // ══════════════════════════════════════════
+
+        function toggleAuthMode() {
+            authMode = authMode === 'login' ? 'signup' : 'login';
+            const isSignup = authMode === 'signup';
+            document.getElementById('authTitle').textContent     = isSignup ? 'Create Account' : 'Welcome Back';
+            document.getElementById('authSubmitBtn').textContent = isSignup ? 'Sign Up' : 'Log In';
+            document.getElementById('authSwitchText').textContent = isSignup ? 'Already have an account?' : "Don't have an account?";
+            document.getElementById('authSwitchLink').textContent = isSignup ? 'Log in' : 'Sign up';
+            document.getElementById('authDisplayName').style.display = isSignup ? 'block' : 'none';
+            document.getElementById('authError').textContent = '';
+        }
+
+        function handleAuthKeyPress(e) {
+            if (e.key === 'Enter') submitAuth();
+        }
+
+        async function submitAuth() {
+            const email       = document.getElementById('authEmail').value.trim();
+            const password    = document.getElementById('authPassword').value;
+            const displayName = document.getElementById('authDisplayName').value.trim();
+            const errorEl     = document.getElementById('authError');
+            const btn         = document.getElementById('authSubmitBtn');
+
+            errorEl.textContent = '';
+
+            if (!email || !password) {
+                errorEl.textContent = 'Please fill in all fields.';
+                return;
+            }
+            if (authMode === 'signup' && !displayName) {
+                errorEl.textContent = 'Please enter a display name.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span>';
+
+            try {
+                const body = authMode === 'signup'
+                    ? { email, password, displayName }
+                    : { email, password };
+
+                const res  = await fetch(`${API_URL}/api/auth/${authMode}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    errorEl.textContent = data.error || 'Something went wrong.';
+                    return;
+                }
+
+                // Save session
+                localStorage.setItem('authToken', data.token);
+                loginSuccess(data);
+
+            } catch (err) {
+                errorEl.textContent = 'Network error. Please try again.';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = authMode === 'login' ? 'Log In' : 'Sign Up';
+            }
+        }
+
+        function loginSuccess(userData) {
+            currentUser = userData;
+            document.getElementById('displayNameLabel').textContent = userData.displayName;
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display  = 'block';
+            document.getElementById('chatToggleBtn').style.display = 'flex';
+
             loadData();
             renderSongs();
             updateProgress();
             checkUsage();
             checkPaymentStatus();
-            
-            if (albumData.songs.length === 0) {
-                addSong();
-            }
+
+            if (albumData.songs.length === 0) addSong();
         }
 
-        function getUserId() {
-            let id = localStorage.getItem('albumPlannerId');
-            if (!id) {
-                id = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('albumPlannerId', id);
-            }
-            return id;
+        function logout() {
+            localStorage.removeItem('authToken');
+            currentUser = null;
+            albumData   = { songs: [], chatHistory: [] };
+            document.getElementById('appScreen').style.display  = 'none';
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('chatToggleBtn').style.display = 'none';
+            // Clear chat UI
+            document.getElementById('chatMessages').innerHTML = '';
+            if (document.getElementById('chatSidebar').classList.contains('open')) toggleChat();
         }
 
-        async function checkUsage() {
+        // Auto-login on page load
+        async function init() {
+            const token = localStorage.getItem('authToken');
+            if (!token) return; // show auth screen
+
             try {
-                const response = await fetch(`${API_URL}/api/check-usage`, {
+                const res  = await fetch(`${API_URL}/api/auth/me`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId })
+                    body: JSON.stringify({ token })
                 });
+                const data = await res.json();
+                if (res.ok && data.userId) {
+                    loginSuccess({ ...data, token });
+                } else {
+                    localStorage.removeItem('authToken');
+                }
+            } catch (e) {
+                localStorage.removeItem('authToken');
+            }
+        }
 
-                if (response.ok) {
-                    userUsage = await response.json();
+        // ══════════════════════════════════════════
+        //  USAGE
+        // ══════════════════════════════════════════
+
+        async function checkUsage() {
+            if (!currentUser) return;
+            try {
+                const res = await fetch(`${API_URL}/api/check-usage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: currentUser.token })
+                });
+                if (res.ok) {
+                    userUsage = await res.json();
                     updateUsageDisplay();
                 }
-            } catch (error) {
-                console.error('Failed to check usage:', error);
+            } catch (e) {
+                console.error('Failed to check usage:', e);
             }
         }
 
         function updateUsageDisplay() {
-            const countEl = document.getElementById('usageCount');
+            const countEl     = document.getElementById('usageCount');
             const indicatorEl = document.getElementById('usageIndicator');
-
             if (userUsage.isPremium) {
                 indicatorEl.innerHTML = `
                     <div class="usage-text">Status:</div>
-                    <div class="premium-badge">Premium</div>
-                `;
+                    <div class="premium-badge">Premium ✦</div>`;
             } else {
                 countEl.textContent = userUsage.remaining;
-                countEl.className = 'usage-count';
-                
-                if (userUsage.remaining <= 5) {
-                    countEl.classList.add('danger');
-                } else if (userUsage.remaining <= 10) {
-                    countEl.classList.add('warning');
-                }
+                countEl.className   = 'usage-count';
+                if (userUsage.remaining <= 5)       countEl.classList.add('danger');
+                else if (userUsage.remaining <= 10) countEl.classList.add('warning');
             }
         }
 
         async function checkPaymentStatus() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const sessionId = urlParams.get('session_id');
-            const paymentStatus = urlParams.get('payment');
+            const params    = new URLSearchParams(window.location.search);
+            const sessionId = params.get('session_id');
+            const status    = params.get('payment');
+            if (status !== 'success' || !sessionId || !currentUser) return;
 
-            if (paymentStatus === 'success' && sessionId) {
-                try {
-                    const response = await fetch(`${API_URL}/api/verify-subscription`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ sessionId, userId })
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.success) {
-                            alert('🎉 Welcome to Premium! You now have unlimited access.');
-                            await checkUsage();
-                            // Clean URL
-                            window.history.replaceState({}, document.title, window.location.pathname);
-                        }
-                    }
-                } catch (error) {
-                    console.error('Verification error:', error);
+            try {
+                const res  = await fetch(`${API_URL}/api/verify-subscription`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sessionId, userId: currentUser.userId })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('🎉 Welcome to Premium! You now have unlimited access.');
+                    await checkUsage();
+                    window.history.replaceState({}, document.title, window.location.pathname);
                 }
+            } catch (e) {
+                console.error('Verification error:', e);
             }
         }
 
-        // Song management
+        // ══════════════════════════════════════════
+        //  SONG MANAGEMENT
+        // ══════════════════════════════════════════
+
         function addSong() {
-            const song = {
+            albumData.songs.push({
                 id: Date.now(),
                 title: `Song ${albumData.songs.length + 1}`,
-                stages: {
-                    'Produced': 'Not Started',
-                    'Vocals': 'Not Started',
-                    'Final Mix': 'Not Started',
-                    'Mastered': 'Not Started'
-                },
+                stages: { Produced: 'Not Started', Vocals: 'Not Started', 'Final Mix': 'Not Started', Mastered: 'Not Started' },
                 lyrics: '',
                 notes: ''
-            };
-            albumData.songs.push(song);
-            saveData();
-            renderSongs();
-            updateProgress();
+            });
+            saveData(); renderSongs(); updateProgress();
         }
 
         function deleteSong(id) {
-            if (confirm('Are you sure you want to delete this song?')) {
-                albumData.songs = albumData.songs.filter(s => s.id !== id);
-                saveData();
-                renderSongs();
-                updateProgress();
-            }
+            if (!confirm('Delete this song?')) return;
+            albumData.songs = albumData.songs.filter(s => s.id !== id);
+            saveData(); renderSongs(); updateProgress();
         }
 
         function updateSongTitle(id, title) {
-            const song = albumData.songs.find(s => s.id === id);
-            if (song) {
-                song.title = title;
-                saveData();
-            }
+            const s = albumData.songs.find(s => s.id === id);
+            if (s) { s.title = title; saveData(); }
         }
 
         function updateStage(id, stage, status) {
-            const song = albumData.songs.find(s => s.id === id);
-            if (song) {
-                song.stages[stage] = status;
-                saveData();
-                updateProgress();
-            }
+            const s = albumData.songs.find(s => s.id === id);
+            if (s) { s.stages[stage] = status; saveData(); updateProgress(); }
         }
 
         function updateLyrics(id, lyrics) {
-            const song = albumData.songs.find(s => s.id === id);
-            if (song) {
-                song.lyrics = lyrics;
-                saveData();
-            }
+            const s = albumData.songs.find(s => s.id === id);
+            if (s) { s.lyrics = lyrics; saveData(); }
         }
 
         function updateNotes(id, notes) {
-            const song = albumData.songs.find(s => s.id === id);
-            if (song) {
-                song.notes = notes;
-                saveData();
-            }
+            const s = albumData.songs.find(s => s.id === id);
+            if (s) { s.notes = notes; saveData(); }
         }
 
         function toggleSection(id, section) {
-            const element = document.getElementById(`${section}-${id}`);
-            if (element) {
-                element.classList.toggle('open');
-            }
+            document.getElementById(`${section}-${id}`)?.classList.toggle('open');
         }
 
-        // Rendering
+        // ══════════════════════════════════════════
+        //  RENDERING
+        // ══════════════════════════════════════════
+
         function renderSongs() {
-            const container = document.getElementById('songsList');
-            container.innerHTML = albumData.songs.map(song => `
+            document.getElementById('songsList').innerHTML = albumData.songs.map(song => `
                 <div class="song-card">
                     <div class="song-header">
-                        <input 
-                            type="text" 
-                            class="song-title" 
-                            value="${song.title}"
+                        <input
+                            type="text"
+                            class="song-title-input"
+                            value="${song.title.replace(/"/g, '&quot;')}"
                             onchange="updateSongTitle(${song.id}, this.value)"
-                            style="background: transparent; border: none; color: var(--text-primary); outline: none;"
                         >
                         <div class="song-actions">
                             <button class="icon-btn" onclick="toggleSection(${song.id}, 'lyrics')" title="Lyrics">📝</button>
-                            <button class="icon-btn" onclick="toggleSection(${song.id}, 'notes')" title="Notes">📋</button>
-                            <button class="icon-btn" onclick="deleteSong(${song.id})" title="Delete">🗑️</button>
+                            <button class="icon-btn" onclick="toggleSection(${song.id}, 'notes')"  title="Notes">📋</button>
+                            <button class="icon-btn" onclick="deleteSong(${song.id})"              title="Delete">🗑️</button>
                         </div>
                     </div>
                     <div class="stages-grid">
@@ -934,227 +1080,165 @@
                             <div class="stage-item">
                                 <label class="stage-label">${stage}</label>
                                 <select onchange="updateStage(${song.id}, '${stage}', this.value)">
-                                    ${STATUS_OPTIONS.map(status => `
-                                        <option value="${status}" ${song.stages[stage] === status ? 'selected' : ''}>
-                                            ${status === 'Not Started' ? '○' : status === 'In Progress' ? '◐' : '●'} ${status}
-                                        </option>
-                                    `).join('')}
+                                    ${STATUS_OPTIONS.map(s => `
+                                        <option value="${s}" ${song.stages[stage] === s ? 'selected' : ''}>
+                                            ${s === 'Not Started' ? '○' : s === 'In Progress' ? '◐' : '●'} ${s}
+                                        </option>`).join('')}
                                 </select>
-                            </div>
-                        `).join('')}
+                            </div>`).join('')}
                     </div>
                     <div class="expandable-section" id="lyrics-${song.id}">
                         <div class="section-label">Lyrics</div>
-                        <textarea 
-                            placeholder="Write your lyrics here..."
-                            onchange="updateLyrics(${song.id}, this.value)"
-                        >${song.lyrics}</textarea>
+                        <textarea placeholder="Write your lyrics here..." onchange="updateLyrics(${song.id}, this.value)">${song.lyrics}</textarea>
                     </div>
                     <div class="expandable-section" id="notes-${song.id}">
                         <div class="section-label">Notes</div>
-                        <textarea 
-                            placeholder="Add notes about this song..."
-                            onchange="updateNotes(${song.id}, this.value)"
-                        >${song.notes}</textarea>
+                        <textarea placeholder="Add notes about this song..." onchange="updateNotes(${song.id}, this.value)">${song.notes}</textarea>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
 
         function updateProgress() {
-            const totalSongs = albumData.songs.length;
-            if (totalSongs === 0) {
-                document.getElementById('progressBar').style.width = '0%';
-                document.getElementById('progressText').textContent = '0%';
-                return;
-            }
-
-            const completeSongs = albumData.songs.filter(song => 
-                Object.values(song.stages).every(status => status === 'Complete')
-            ).length;
-
-            const percentage = Math.round((completeSongs / totalSongs) * 100);
-            document.getElementById('progressBar').style.width = `${percentage}%`;
-            document.getElementById('progressText').textContent = `${percentage}% Complete (${completeSongs}/${totalSongs} songs)`;
+            const total    = albumData.songs.length;
+            const complete = albumData.songs.filter(s => Object.values(s.stages).every(v => v === 'Complete')).length;
+            const pct      = total ? Math.round((complete / total) * 100) : 0;
+            document.getElementById('progressBar').style.width = `${pct}%`;
+            document.getElementById('progressText').textContent = total
+                ? `${pct}% Complete (${complete}/${total} songs)`
+                : '0%';
         }
 
-        // Data persistence
+        // ══════════════════════════════════════════
+        //  DATA PERSISTENCE (per-user key)
+        // ══════════════════════════════════════════
+
         function saveData() {
-            localStorage.setItem('albumPlannerData', JSON.stringify(albumData));
+            if (!currentUser) return;
+            localStorage.setItem(`albumData_${currentUser.userId}`, JSON.stringify(albumData));
         }
 
         function loadData() {
-            const saved = localStorage.getItem('albumPlannerData');
-            if (saved) {
-                albumData = JSON.parse(saved);
-            }
+            if (!currentUser) return;
+            const saved = localStorage.getItem(`albumData_${currentUser.userId}`);
+            if (saved) albumData = JSON.parse(saved);
         }
 
         function exportData() {
-            const dataStr = JSON.stringify(albumData, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(dataBlob);
+            const blob = new Blob([JSON.stringify(albumData, null, 2)], { type: 'application/json' });
             const link = document.createElement('a');
-            link.href = url;
+            link.href     = URL.createObjectURL(blob);
             link.download = 'album-planner-data.json';
             link.click();
         }
 
         function importData() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.onload = (event) => {
+            const input    = document.createElement('input');
+            input.type     = 'file';
+            input.accept   = '.json';
+            input.onchange = e => {
+                const reader  = new FileReader();
+                reader.onload = ev => {
                     try {
-                        albumData = JSON.parse(event.target.result);
-                        saveData();
-                        renderSongs();
-                        updateProgress();
+                        albumData = JSON.parse(ev.target.result);
+                        saveData(); renderSongs(); updateProgress();
                         alert('Data imported successfully!');
-                    } catch (error) {
-                        alert('Error importing data. Please check the file format.');
-                    }
+                    } catch { alert('Error importing data. Please check the file format.'); }
                 };
-                reader.readAsText(file);
+                reader.readAsText(e.target.files[0]);
             };
             input.click();
         }
 
-        // Chat functionality
+        // ══════════════════════════════════════════
+        //  CHAT
+        // ══════════════════════════════════════════
+
         function toggleChat() {
-            const sidebar = document.getElementById('chatSidebar');
-            const mainContent = document.getElementById('mainContent');
-            sidebar.classList.toggle('open');
-            mainContent.classList.toggle('chat-open');
+            document.getElementById('chatSidebar').classList.toggle('open');
+            document.getElementById('mainContent').classList.toggle('chat-open');
         }
 
-        function handleChatKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        }
+        function handleChatKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
 
         async function sendMessage() {
-            const input = document.getElementById('chatInput');
+            const input   = document.getElementById('chatInput');
             const message = input.value.trim();
-
             if (!message) return;
 
-            // Check if user has reached limit
-            if (!userUsage.isPremium && userUsage.remaining <= 0) {
-                showPaywall();
-                return;
-            }
+            if (!userUsage.isPremium && userUsage.remaining <= 0) { showPaywall(); return; }
 
-            // Add user message
             addChatMessage(message, 'user');
             input.value = '';
 
-            // Disable send button
-            const sendBtn = document.getElementById('sendBtn');
+            const sendBtn    = document.getElementById('sendBtn');
             sendBtn.disabled = true;
             sendBtn.innerHTML = '<span class="loading"></span>';
 
             try {
-                // Prepare album context
                 const albumContext = {
-                    totalSongs: albumData.songs.length,
-                    completedSongs: albumData.songs.filter(s => 
-                        Object.values(s.stages).every(status => status === 'Complete')
-                    ).length,
-                    songsInProgress: albumData.songs.filter(s => 
-                        Object.values(s.stages).some(status => status === 'In Progress')
-                    ).length,
-                    songs: albumData.songs.map(s => ({
-                        title: s.title,
-                        stages: s.stages
-                    }))
+                    totalSongs:      albumData.songs.length,
+                    completedSongs:  albumData.songs.filter(s => Object.values(s.stages).every(v => v === 'Complete')).length,
+                    songsInProgress: albumData.songs.filter(s => Object.values(s.stages).some(v => v === 'In Progress')).length,
+                    songs: albumData.songs.map(s => ({ title: s.title, stages: s.stages }))
                 };
 
-                const response = await fetch(`${API_URL}/api/chat`, {
+                const res  = await fetch(`${API_URL}/api/chat`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userId,
-                        message,
-                        albumContext
-                    })
+                    body: JSON.stringify({ token: currentUser.token, message, albumContext })
                 });
 
-                const data = await response.json();
+                const data = await res.json();
 
-                if (response.status === 403 && data.error === 'usage_limit_reached') {
-                    showPaywall();
-                    return;
-                }
-
-                if (!response.ok) {
-                    throw new Error(data.message || 'Failed to send message');
-                }
+                if (res.status === 403 && data.error === 'usage_limit_reached') { showPaywall(); return; }
+                if (!res.ok) throw new Error(data.message || 'Failed to send message');
 
                 addChatMessage(data.response, 'assistant');
-                
-                // Update usage
-                userUsage.usage = data.usage;
+                userUsage.usage     = data.usage;
                 userUsage.remaining = data.remaining;
                 updateUsageDisplay();
 
-            } catch (error) {
-                console.error('Error:', error);
+            } catch (err) {
+                console.error(err);
                 addChatMessage('Sorry, there was an error. Please try again.', 'system');
             } finally {
-                sendBtn.disabled = false;
+                sendBtn.disabled  = false;
                 sendBtn.textContent = 'Send';
             }
         }
 
         function addChatMessage(text, role) {
-            const messagesContainer = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${role}`;
-            messageDiv.textContent = text;
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-            // Save to history
+            const container = document.getElementById('chatMessages');
+            const div       = document.createElement('div');
+            div.className   = `message ${role}`;
+            div.textContent = text;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
             albumData.chatHistory.push({ role, text, timestamp: Date.now() });
             saveData();
         }
 
-        // Paywall
-        function showPaywall() {
-            document.getElementById('paywallModal').classList.add('open');
-        }
+        // ══════════════════════════════════════════
+        //  PAYWALL
+        // ══════════════════════════════════════════
 
-        function closePaywall() {
-            document.getElementById('paywallModal').classList.remove('open');
-        }
+        function showPaywall()  { document.getElementById('paywallModal').classList.add('open'); }
+        function closePaywall() { document.getElementById('paywallModal').classList.remove('open'); }
 
         async function selectPlan(plan) {
             try {
-                const response = await fetch(`${API_URL}/api/create-checkout`, {
+                const res  = await fetch(`${API_URL}/api/create-checkout`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId, plan })
+                    body: JSON.stringify({ userId: currentUser.userId, plan })
                 });
-
-                const data = await response.json();
-
-                if (response.ok && data.url) {
-                    window.location.href = data.url;
-                } else {
-                    alert('Failed to start checkout. Please try again.');
-                }
-            } catch (error) {
-                console.error('Checkout error:', error);
-                alert('An error occurred. Please try again.');
-            }
+                const data = await res.json();
+                if (res.ok && data.url) window.location.href = data.url;
+                else alert('Failed to start checkout. Please try again.');
+            } catch { alert('An error occurred. Please try again.'); }
         }
 
-        // Initialize app
+        // ── Boot ──
         init();
     </script>
 </body>
